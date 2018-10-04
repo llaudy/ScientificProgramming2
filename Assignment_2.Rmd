@@ -67,3 +67,16 @@ descs_tr = descriptors[selection, ]
 score_te = score[-selection, ]
 descs_te = descriptors[-selection, ]
 ```
+# Data cleaning
+
+The training data contains many Na values:
+```{r}
+table(is.na(descs_tr))
+table(colSums(is.na(descs_tr)))
+```
+
+Remove descriptors (columns) that contain at least one missing value:
+```{r}
+# we only include the columns in which the number of row that do NOT contain missing values is equal to the total number of rows
+descs_tr = descs_tr[,colSums(!is.na(descs_tr)) == nrow(descs_tr)]
+```
