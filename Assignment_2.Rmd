@@ -81,7 +81,8 @@ Remove descriptors (columns) that contain at least one missing value:
 descs_tr = descs_tr[,colSums(!is.na(descs_tr)) == nrow(descs_tr)]
 ```
 # Feature selection (based on variance)
-
+In order to reduce the number of descriptors, we selected descriptors based on their variance.
+Only descriptors with a variance higher than the third quantile were selected.
 ```{r}
 # Compute for each descriptor the variance (except column 1 which contains the molecule ID):
 variance_tr = colVars(as.matrix(descs_tr[,2:length(descs_tr)]))
@@ -99,3 +100,6 @@ descs_tr = descs_tr[,c(TRUE, (variance_tr > quantile75))]
 # Number of included descriptors (excluding the molecule ID):
 ncol(descs_tr)-1
 ```
+
+
+
