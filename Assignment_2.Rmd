@@ -20,3 +20,14 @@ if (length(setdiff(packages, rownames(installed.packages()))) > 0) {
 }
 ```
 
+Load the required packages:
+```{r}
+# the package 'matrixStats' is used to calculate the variance across each column (descriptor)
+library(matrixStats)
+# the package 'Boruta' is used to perform feature selection based on a Random Forest method
+library(Boruta)
+# the package 'pls' is used to perfrom the Partial Least Squares analysis
+library(pls)
+# the package 'ggplot2' is used to plot the observed and predicted activity scores
+library(ggplot2)
+```
