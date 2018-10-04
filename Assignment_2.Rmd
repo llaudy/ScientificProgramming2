@@ -10,4 +10,13 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+# Packages
+
+Check if the required packages are already installed. If not, install them:
+```{r}
+packages = c("matrixStats", "Boruta", "pls", "ggplot2")
+if (length(setdiff(packages, rownames(installed.packages()))) > 0) {
+  install.packages(setdiff(packages, rownames(installed.packages())))  
+}
+```
 
