@@ -52,4 +52,18 @@ row.names(descriptors) = c(1:nrow(descriptors))
 #check if sorting went well:
 table(score[,1] == descriptors[,1])
 ```
+# Split data
 
+Create a training set (80%) and a test set (20%)  
+```{r}
+# use set.seed() to ensure that the same random numbers are used and the results are reproducible
+set.seed(0)
+# selected 80% of the total number of rows
+selection = sample(nrow(descriptors), 0.8*nrow(descriptors))
+# use this selection to select the training data
+score_tr = score[selection, ]
+descs_tr = descriptors[selection, ]
+# the same selection will be excluded from the test data
+score_te = score[-selection, ]
+descs_te = descriptors[-selection, ]
+```
