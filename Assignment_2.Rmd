@@ -42,7 +42,7 @@ score = read.csv(file = 'C:/Users/Lian/Desktop/CloudStation/MSB1015 Scientific P
 
 descriptors = read.csv(file = 'C:/Users/Lian/Desktop/CloudStation/MSB1015 Scientific Programming/Assignments/2 Making multivariate statistics reproducible/descriptors.csv', sep=',', row.names = 1, header=TRUE)
 ```
-Sort both dataframes by substance ID such the order of molecules matches:
+Sort both dataframes by substance ID such that the order of molecules matches:
 ```{r}
 score = score[order(score$SID),]
 row.names(score) = c(1:nrow(score))
@@ -54,7 +54,7 @@ table(score[,1] == descriptors[,1])
 ```
 # Split data
 
-Create a training set (80%) and a test set (20%)  
+Create a training set (80%) and a test set (20%):  
 ```{r}
 # use set.seed() to ensure that the same random numbers are used and the results are reproducible
 set.seed(0)
