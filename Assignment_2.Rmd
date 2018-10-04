@@ -48,4 +48,8 @@ score = score[order(score$SID),]
 row.names(score) = c(1:nrow(score))
 descriptors =  descriptors[order(descriptors$molSIDs),]
 row.names(descriptors) = c(1:nrow(descriptors))
+
+#check if sorting went well:
+table(score[,1] == descriptors[,1])
 ```
+
