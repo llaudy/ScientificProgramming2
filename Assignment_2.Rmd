@@ -31,3 +31,14 @@ library(pls)
 # the package 'ggplot2' is used to plot the observed and predicted activity scores
 library(ggplot2)
 ```
+
+# Load data
+
+Load the data files.
+The data file called 'score' has to contain the 'SID' in the first column and the Activity Score in the second column.
+The data file called 'descriptors' has to contain the 'SID' in the first column and the descriptors in the remaining columns. 
+```{r}
+score = read.csv(file = 'C:/Users/Lian/Desktop/CloudStation/MSB1015 Scientific Programming/Assignments/2 Making multivariate statistics reproducible/qsarSmallData.csv', sep=',', row.names = 1, header=TRUE)
+
+descriptors = read.csv(file = 'C:/Users/Lian/Desktop/CloudStation/MSB1015 Scientific Programming/Assignments/2 Making multivariate statistics reproducible/descriptors.csv', sep=',', row.names = 1, header=TRUE)
+```
