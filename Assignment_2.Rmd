@@ -42,3 +42,10 @@ score = read.csv(file = 'C:/Users/Lian/Desktop/CloudStation/MSB1015 Scientific P
 
 descriptors = read.csv(file = 'C:/Users/Lian/Desktop/CloudStation/MSB1015 Scientific Programming/Assignments/2 Making multivariate statistics reproducible/descriptors.csv', sep=',', row.names = 1, header=TRUE)
 ```
+Sort both dataframes by substance ID such the order of molecules matches:
+```{r}
+score = score[order(score$SID),]
+row.names(score) = c(1:nrow(score))
+descriptors =  descriptors[order(descriptors$molSIDs),]
+row.names(descriptors) = c(1:nrow(descriptors))
+```
