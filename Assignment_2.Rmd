@@ -1,1 +1,13 @@
+---
+title: "MSB1015 Scientific Programming: Assignment 2"
+author: "Lian Laudy"
+date: "5 oktober 2018"
+output: html_document
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
 
