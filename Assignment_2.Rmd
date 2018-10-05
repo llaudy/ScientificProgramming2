@@ -37,6 +37,7 @@ score = read.csv(file = 'C:/Users/Lian/Desktop/CloudStation/MSB1015 Scientific P
 
 descriptors = read.csv(file = 'C:/Users/Lian/Desktop/CloudStation/MSB1015 Scientific Programming/Assignments/2 Making multivariate statistics reproducible/descriptors.csv', sep=',', row.names = 1, header=TRUE)
 ```
+
 Sort both dataframes by substance ID such that the order of molecules matches:
 ```{r}
 score = score[order(score$SID),]
@@ -62,6 +63,7 @@ descs_tr = descriptors[selection, ]
 score_te = score[-selection, ]
 descs_te = descriptors[-selection, ]
 ```
+
 # Data cleaning
 
 The training data contains many Na values:
@@ -101,6 +103,7 @@ descs_te = descs_te[,c(TRUE, (variance_tr > quantile75))]
 # Number of included descriptors (excluding the molecule ID):
 ncol(descs_tr)-1
 ```
+
 # Data transformation
 The data is scaled in order to standardize the range of the descriptors.  
 ```{r}
@@ -148,6 +151,7 @@ boruta_logical = boruta_descs_tr$finalDecision == "Confirmed"
 descs_tr_select = descs_tr_score[, c(TRUE, (boruta_logical), TRUE)]
 descs_te_select = descs_te_score[, c(TRUE, (boruta_logical), TRUE)]
 ```
+
 # Partial Least Squares
 The partial least squares method is used to build a model based on the training set and, consequently, this trained model is used to predict the activity score of the test set. Finally, the predicted and observed scores are compared with each other. 
 ```{r}
@@ -158,4 +162,7 @@ formula_descs_tr_select = as.formula(paste("Score ~", paste(name_descs_tr_select
   
 # Perform a PLS analysis with cross-validation and a maximum of 6 components 
 pls_result = plsr(formula_descs_tr_select, 6, data = descs_tr_select[, 2:length(descs_tr_select)], validation = "CV")
+
+# Plot the RMSEP for each number of components included in the model
+plot(RMSEP(pls_result))
 ```
