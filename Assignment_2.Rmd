@@ -5,11 +5,6 @@ date: "5 oktober 2018"
 output: html_document
 ---
 
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
 # Packages
 
 Check if the required packages are already installed. If not, install them:
