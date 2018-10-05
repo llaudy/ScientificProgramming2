@@ -9,7 +9,7 @@ output: html_document
 
 Check if the required packages are already installed. If not, install them:
 ```{r}
-packages = c("matrixStats", "Boruta", "pls", "ggplot2")
+packages = c("matrixStats", "Boruta", "pls")
 if (length(setdiff(packages, rownames(installed.packages()))) > 0) {
   install.packages(setdiff(packages, rownames(installed.packages())))  
 }
@@ -23,8 +23,6 @@ library(matrixStats)
 library(Boruta)
 # the package 'pls' is used to perfrom the Partial Least Squares analysis
 library(pls)
-# the package 'ggplot2' is used to plot the observed and predicted activity scores
-library(ggplot2)
 ```
 
 # Load data
@@ -165,4 +163,10 @@ pls_result = plsr(formula_descs_tr_select, 6, data = descs_tr_select[, 2:length(
 
 # Plot the RMSEP for each number of components included in the model
 plot(RMSEP(pls_result))
+
+# The RMSEP turns out to be the lowest if 2 components are included in the model. Therefore, the final model will include 2 components
+final_model = predict(pls_result, ncomp = 2, newdata = descs_te_select)
+
+# Plot the observed score versus the predicted score
+predplot(pls_result, ncomp = 2, newdata = descs_te_select)
 ```
