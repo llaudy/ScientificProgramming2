@@ -79,10 +79,13 @@ Remove descriptors (columns) that contain at least one missing value:
 ```{r}
 # we only include the columns in which the number of row that do NOT contain missing values is equal to the total number of rows
 descs_tr = descs_tr[,colSums(!is.na(descs_tr)) == nrow(descs_tr)]
+descs_te = descs_te[,colSums(!is.na(descs_tr)) == nrow(descs_tr)]
 ```
+
 # Feature selection (based on variance)
 In order to reduce the number of descriptors, we selected descriptors based on their variance.
 Only descriptors with a variance higher than the third quantile were selected.
+
 ```{r}
 # Compute for each descriptor the variance (except column 1 which contains the molecule ID):
 variance_tr = colVars(as.matrix(descs_tr[,2:length(descs_tr)]))
@@ -93,6 +96,7 @@ quantile75 = quantile(variance_tr, .75)
 
 # Select only the descriptors with a variance higher than the third quantile (plus the first column containing the molecule ID):
 descs_tr = descs_tr[,c(TRUE, (variance_tr > quantile75))]
+descs_te = descs_te[,c(TRUE, (variance_tr > quantile75))]
 
 # Number of removed descriptors based on variance:
 (length(variance_tr)+1)-ncol(descs_tr)
@@ -109,15 +113,21 @@ mean_descriptor = colMeans(descs_tr[,2:length(descs_tr)])
 # Calculate the standard deviation of each descriptor in the training set:
 sd_descriptor = apply(as.matrix(descs_tr[,2:length(descs_tr)]), 2, sd)
   
-# Normalize each descriptor in the training set:
+# Generate data frames for the normalized training and test set
 descs_tr_norm = as.data.frame(array(data = NA, dim = c(nrow(descs_tr),ncol(descs_tr))))
 descs_tr_norm[,1] =  descs_tr[,1]
 colnames(descs_tr_norm) = colnames(descs_tr)
 
+descs_te_norm = as.data.frame(array(data = NA, dim = c(nrow(descs_te),ncol(descs_te))))
+descs_te_norm[,1] =  descs_te[,1]
+colnames(descs_te_norm) = colnames(descs_te)
+
+# Normalize each descriptor in the training and test set, both using the mean and standard deviation of the training set as you otherwise would already use information from the test set.
 for (j in 2:ncol(descs_tr_norm)) { 
     descs_tr_norm[,j] = (descs_tr[,j] - mean_descriptor[j-1]) / sd_descriptor[j-1]
+    descs_te_norm[,j] = (descs_te[,j] - mean_descriptor[j-1]) / sd_descriptor[j-1]
 }
-```
+
 # Feature selection (based on Random Forest)
 In order to reduce the number of descriptors even more, we use a feature selection method that is based on Random Forest.
 Only descriptors that are considered to have a confirmed importance will be selected.
@@ -125,6 +135,8 @@ Only descriptors that are considered to have a confirmed importance will be sele
 # Add Activity score to corresponding molecule:
 descs_tr_score = cbind(descs_tr_norm, score[match(descs_tr_norm[,1], score[,1]),2])
 colnames(descs_tr_score)[length(descs_tr_score)] = 'Score'
+descs_te_score = cbind(descs_te_norm, score[match(descs_te_norm[,1], score[,1]),2])
+colnames(descs_te_score)[length(descs_te_score)] = 'Score'
   
 # Run Boruta algorithm:
 set.seed(0)
@@ -134,8 +146,9 @@ boruta_descs_tr = Boruta(Score~.,data=descs_tr_score[,2:length(descs_tr_score)],
 print(boruta_descs_tr)
 boruta_logical = boruta_descs_tr$finalDecision == "Confirmed"
 
-# Select data of the important descriptors (plus molecule ID and score) in the training set
+# Select data of the important descriptors (plus molecule ID and score) in the training and test set
 descs_tr_select = descs_tr_score[, c(TRUE, (boruta_logical), TRUE)]
+descs_te_select = descs_te_score[, c(TRUE, (boruta_logical), TRUE)]
 ```
 # Partial Least Squares
 The partial least squares method is used to build a model based on the training set and, consequently, this trained model is used to predict the activity score of the test set. Finally, the predicted and observed scores are compared with each other. 
