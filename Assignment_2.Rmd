@@ -122,6 +122,7 @@ for (j in 2:ncol(descs_tr_norm)) {
     descs_tr_norm[,j] = (descs_tr[,j] - mean_descriptor[j-1]) / sd_descriptor[j-1]
     descs_te_norm[,j] = (descs_te[,j] - mean_descriptor[j-1]) / sd_descriptor[j-1]
 }
+```
 
 # Feature selection (based on Random Forest)
 In order to reduce the number of descriptors even more, we use a feature selection method that is based on Random Forest.
