@@ -100,6 +100,25 @@ descs_tr = descs_tr[,c(TRUE, (variance_tr > quantile75))]
 # Number of included descriptors (excluding the molecule ID):
 ncol(descs_tr)-1
 ```
+# Data transformation
+The data is scaled in order to standardize the range of the descriptors.  
+```{r}
+# Calculate the mean of each descriptor in the training set:
+mean_descriptor = colMeans(descs_tr[,2:length(descs_tr)])
+  
+# Calculate the standard deviation of each descriptor in the training set:
+sd_descriptor = apply(as.matrix(descs_tr[,2:length(descs_tr)]), 2, sd)
+  
+# Normalize each descriptor in the training set:
+descs_tr_norm = as.data.frame(array(data = NA, dim = c(nrow(descs_tr),ncol(descs_tr))))
+descs_tr_norm[,1] =  descs_tr[,1]
+colnames(descs_tr_norm) = colnames(descs_tr)
 
+for (j in 2:ncol(descs_tr_norm)) { 
+    descs_tr_norm[,j] = (descs_tr[,j] - mean_descriptor[j-1]) / sd_descriptor[j-1]
+}
+
+
+```
 
 
