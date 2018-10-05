@@ -73,8 +73,10 @@ table(colSums(is.na(descs_tr)))
 Remove descriptors (columns) that contain at least one missing value:
 ```{r}
 # we only include the columns in which the number of row that do NOT contain missing values is equal to the total number of rows
-descs_tr = descs_tr[,colSums(!is.na(descs_tr)) == nrow(descs_tr)]
+descs_tr2 = descs_tr[,colSums(!is.na(descs_tr)) == nrow(descs_tr)]
 descs_te = descs_te[,colSums(!is.na(descs_tr)) == nrow(descs_tr)]
+descs_tr = descs_tr2
+remove(descs_tr2)
 ```
 
 # Feature selection (based on variance)
