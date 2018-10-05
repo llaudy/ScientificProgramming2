@@ -117,8 +117,24 @@ colnames(descs_tr_norm) = colnames(descs_tr)
 for (j in 2:ncol(descs_tr_norm)) { 
     descs_tr_norm[,j] = (descs_tr[,j] - mean_descriptor[j-1]) / sd_descriptor[j-1]
 }
-
-
 ```
+# FEATURE SELECTION (based on Random Forest)
+In order to reduce the number of descriptors even more, we use a feature selection method that is based on Random Forest.
+Only descriptors that are considered to have a confirmed importance will be selected.
+```{r}
+# Add Activity score to corresponding molecule:
+descs_tr_score = cbind(descs_tr_norm, score[match(descs_tr_norm[,1], score[,1]),2])
+colnames(descs_tr_score)[length(descs_tr_score)] = 'Score'
+  
+# Run Boruta algorithm:
+set.seed(0)
+boruta_descs_tr = Boruta(Score~.,data=descs_tr_score[,2:length(descs_tr_score)],doTrace=1)
+  
+# Select descriptors that turned out to be important:
+print(boruta_descs_tr)
+boruta_logical = boruta_descs_tr$finalDecision == "Confirmed"
 
+# Select data of the important descriptors (plus molecule ID and score) in the training set
+descs_tr_select = descs_tr_score[, c(TRUE, (boruta_logical), TRUE)]
+```
 
