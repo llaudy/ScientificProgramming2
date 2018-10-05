@@ -118,7 +118,7 @@ for (j in 2:ncol(descs_tr_norm)) {
     descs_tr_norm[,j] = (descs_tr[,j] - mean_descriptor[j-1]) / sd_descriptor[j-1]
 }
 ```
-# FEATURE SELECTION (based on Random Forest)
+# Feature selection (based on Random Forest)
 In order to reduce the number of descriptors even more, we use a feature selection method that is based on Random Forest.
 Only descriptors that are considered to have a confirmed importance will be selected.
 ```{r}
@@ -137,4 +137,14 @@ boruta_logical = boruta_descs_tr$finalDecision == "Confirmed"
 # Select data of the important descriptors (plus molecule ID and score) in the training set
 descs_tr_select = descs_tr_score[, c(TRUE, (boruta_logical), TRUE)]
 ```
-
+# Partial Least Squares
+The partial least squares method is used to build a model based on the training set and, consequently, this trained model is used to predict the activity score of the test set. Finally, the predicted and observed scores are compared with each other. 
+```{r}
+# Generate the correct formulation of input (descriptors) necessary for PLS function
+names(descs_tr_select) = make.names(names(descs_tr_select))
+name_descs_tr_select = names(descs_tr_select)
+formula_descs_tr_select = as.formula(paste("Score ~", paste(name_descs_tr_select[!name_descs_tr_select %in% c("molSIDs","Score")], collapse = " + ")))
+  
+# Perform a PLS analysis with cross-validation and a maximum of 6 components 
+pls_result = plsr(formula_descs_tr_select, 6, data = descs_tr_select[, 2:length(descs_tr_select)], validation = "CV")
+```
